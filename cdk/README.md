@@ -5,7 +5,7 @@ This project provides an AWS CDK application for deploying a scalable Moodle ins
 
 ## Architecture
 
-![alt text](Architecture-v1.drawio-1.png)
+![alt text](Architecture-v1.drawio.png)
 
 ## Project Description
 
