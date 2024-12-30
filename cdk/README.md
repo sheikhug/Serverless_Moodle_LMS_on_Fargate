@@ -1,8 +1,48 @@
-# Serverless hosting of Moodle LMS on AWS using Fargate
--------------------------------------------------------
+# Scalable Moodle Deployment on AWS ECS Fargate
 
-### Architecture
-![alt text](Architecture-v1.drawio.png)
+This project provides an AWS CDK application for deploying a scalable Moodle installation using Amazon ECS Fargate, RDS, ElastiCache, and CloudFront.
+
+
+## Architecture
+
+![alt text](Architecture-v1.drawio-1.png)
+
+## Project Description
+
+This AWS CDK application automates the deployment of a highly available and scalable Moodle learning management system. It leverages various AWS services to create a robust infrastructure:
+
+- Amazon ECS Fargate for running Moodle containers
+- Amazon RDS for MySQL database
+- Amazon ElastiCache for Redis caching
+- Amazon EFS for shared file storage
+- Application Load Balancer for traffic distribution
+- Amazon CloudFront for content delivery
+- AWS WAF for web application firewall protection
+
+The infrastructure is designed with security and scalability in mind, utilizing VPC endpoints, security groups, and auto-scaling capabilities. It also includes CloudTrail for auditing and SNS notifications for RDS events.
+
+## Repository Structure
+
+```
+.
+├── bin
+│   └── cdk.ts                 # Entry point for the CDK application
+├── lib
+│   ├── cloudfront-waf-web-acl-stack.ts  # CloudFront WAF Web ACL stack
+│   ├── ecs-moodle-stack.ts    # Main ECS Moodle stack
+│   └── ssm-parameter-reader.ts  # Utility for reading SSM parameters
+├── src
+│   └── image
+│       └── src
+│           ├── Dockerfile     # Dockerfile for Moodle image
+│           └── libmoodle.sh   # Moodle configuration script
+├── cdk.json                   # CDK configuration
+├── package.json               # Node.js dependencies
+└── tsconfig.json              # TypeScript configuration
+```
+
+## Usage Instructions
+
 
 
 ### Prerequisites
@@ -64,49 +104,140 @@ docker tag bitnami/moodle:latest 024848486969.dkr.ecr.us-east-1.amazonaws.com/mo
 docker push 024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest
 ```
 
-### Deployment steps
 
-1\. Configure the context in the file src/cdk/cdk.json.
+### Prerequisites
 
-a. Configure app-config/albCertificateArn and app-config/cfCertificateArn with the ACM certificate ARN.
+- Node.js (v14.x or later)
+- AWS CLI configured with appropriate credentials
+- AWS CDK CLI (v2.x)
 
-b. Configure the app-config/cfDomain for CloudFront with the same domain name as the public certificates that you’ve requested during the prerequisites step. For example: moodle.example.com.
+### Installation
 
-c. Configure the app-config/moodleImageUri with the Moodle container image URI that you’ve pushed prior to deployment steps, for example ```024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest```.
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-2\. Go to the AWS CDK app directory cd src/cdk and then run ``` npm install ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Configure the `cdk.json` file with your specific settings, including:
+   - ALB and CloudFront certificate ARNs
+   - CloudFront domain
+   - Moodle Docker image URI
+   - Service replica count
+   - RDS and ElastiCache instance types
 
 
-3\. Run ```cdk bootstrap``` to bootstrap CDK toolkit.
 
-4\. Run ```cdk deploy --all``` to deploy the CDK app.
 
-5\. Once successfully deployed, Moodle begins first-time installation and it takes approximately 15-20 minutes. Check the progress by checking at the logs in Amazon ECS console.
+### Configuration
 
-6\. Once it is completed, you can access the application endpoint on the ALB endpoint described in the deployment output APPLICATIONLOADBALANCERDNSNAME
+The main configuration options are set in the `cdk.json` file. You can adjust the following parameters:
 
-### Post-deployment steps
+- `albCertificateArn`: ARN of the SSL certificate for the ALB
+- `cfCertificateArn`: ARN of the SSL certificate for CloudFront
+- `cfDomain`: Domain name for the CloudFront distribution
+- `moodleImageUri`: URI of the Moodle Docker image
+- `serviceReplicaDesiredCount`: Desired number of ECS tasks
+- `rdsInstanceType`: RDS instance type
+- `elastiCacheRedisInstanceType`: ElastiCache Redis instance type
 
-1\. (Optional) You can configure a DNS record to map into the ALB endpoint to clear the SSL warning.
 
-2\. Use the username described in MOODLEUSERNAME output and fetch the password on AWS Secrets Manager with the ARN described in the MOODLEPASSWORDSECRETARN output.
 
-3\. To improve Moodle application performance, configure Moodle caching using the Amazon ElastiCache Redis endpoint described in the MOODLEREDISPRIMARYENDPOINTADDRESSANDPORT output.
+### Deployment
 
-a. Add the cache store instance using the Amazon ElastiCache Redis endpoint. Refer to the official Moodle documentation for [Adding cache store instances](https://docs.moodle.org/311/en/Caching#Adding_cache_store_instances).
+1. Synthesize the CloudFormation template:
+   ```
+   cdk synth
+   ```
 
-b. Set the Application cache to use the Redis cache store instance that was added in the previous step. Refer to the official Moodle documentation for [Setting the stores that get used when no mapping is present](https://docs.moodle.org/311/en/Caching#Setting_the_stores_that_get_used_when_no_mapping_is_present).
+2. Deploy the stacks:
+   ```
+   cdk deploy --all
+   ```
 
-4\. You can scale the number of the Moodle instance replicas by configuring app-config/serviceReplicaDesiredCount context in the file src/cdk/cdk.json. You can also configure the app-config/serviceHealthCheckGracePeriodSeconds context from 1800 to 300 seconds. You can run cdk diff to view the comparison between the current version with the already-deployed version. You can then run cdk deploy --all again to apply the latest configurations.
+### Troubleshooting
 
-5\. To access the Moodle application from CloudFront endpoint, you need to create a CNAME DNS record using the domain name that you set up earlier with the record value specified in CLOUDFRONTDNSNAME output. For example: moodle.example.com with value abcd1234efgh.cloudfront.net. If you are getting a 502 error, it might be that the the TLS handshake between CloudFront and ALB is failing because of the domain name in the TLS certificate for ALB does not match with the Host header forwarded from CloudFront (the Host header in this case is the domain name that you are using to access CloudFront).
+1. ECS Task Failures:
+   - Check CloudWatch Logs for the ECS tasks
+   - Ensure the Moodle image is accessible and correctly configured
+   - Verify that the database connection details are correct
 
-### Cleanup
+2. Database Connection Issues:
+   - Check the security group rules for the RDS instance
+   - Verify the database credentials in Secrets Manager
 
-You should consider deleting the application infrastructure once you no longer need it to save costs. To do that, follow these steps:
+3. CloudFront Access:
+   - Ensure the CloudFront distribution is deployed and enabled
+   - Check the WAF rules if content is being blocked
 
-1\. Open your preferred command line interface such as Terminal or Command Prompt.
+For detailed logs and debugging:
+- Enable verbose logging in the Moodle container by setting `BITNAMI_DEBUG=true`
+- Check CloudWatch Logs for ECS tasks, RDS, and ALB access logs
+- Use AWS X-Ray for tracing requests through the application
 
-2\. From the top directory of the source code, go to the CDK app directory cd src/cdk
+## Data Flow
 
-3\. Run ```cdk destroy --all``` to delete the CDK application.
+The request data flow through the application is as follows:
+
+1. User requests are first received by CloudFront
+2. CloudFront forwards requests to the Application Load Balancer
+3. The ALB distributes requests to ECS Fargate tasks running Moodle
+4. Moodle containers process requests, interacting with:
+   - RDS MySQL for database operations
+   - ElastiCache Redis for caching
+   - EFS for shared file storage
+5. Responses flow back through the ALB and CloudFront to the user
+
+```
+[User] <-> [CloudFront] <-> [ALB] <-> [ECS Fargate (Moodle)]
+                                       |
+                                       ├─ [RDS MySQL]
+                                       ├─ [ElastiCache Redis]
+                                       └─ [EFS]
+```
+
+Note: The WAF is integrated with CloudFront to provide an additional layer of security.
+
+## Infrastructure
+
+The main infrastructure components defined in the CDK stacks include:
+
+- VPC:
+  * 2 public subnets and 2 private subnets
+  * NAT Gateways for outbound internet access from private subnets
+  * VPC Endpoints for ECR and S3
+
+- ECS:
+  * Fargate cluster
+  * Task definition for Moodle container
+  * ECS Service with auto-scaling
+
+- RDS:
+  * MySQL instance for Moodle database
+  * Event subscription for notifications
+
+- ElastiCache:
+  * Redis instance for caching
+
+- EFS:
+  * File system for shared Moodle data
+
+- Application Load Balancer:
+  * Distributes traffic to ECS tasks
+
+- CloudFront:
+  * Content delivery network
+
+- WAF:
+  * Web Application Firewall integrated with CloudFront
+
+- CloudTrail:
+  * Audit logging to S3 bucket
+
+- IAM:
+  * Roles and policies for ECS tasks and other resources
