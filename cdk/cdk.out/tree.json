@@ -1,0 +1,3326 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "cloudfront-waf-web-acl-stack": {
+        "id": "cloudfront-waf-web-acl-stack",
+        "path": "cloudfront-waf-web-acl-stack",
+        "children": {
+          "cf-waf": {
+            "id": "cf-waf",
+            "path": "cloudfront-waf-web-acl-stack/cf-waf",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::WAFv2::WebACL",
+              "aws:cdk:cloudformation:props": {
+                "defaultAction": {
+                  "allow": {}
+                },
+                "description": "Web ACL for Moodle CloudFront",
+                "name": "moodle-cf-waf-acl",
+                "rules": [
+                  {
+                    "name": "AWS-AWSManagedRulesAmazonIpReputationList",
+                    "priority": 0,
+                    "statement": {
+                      "managedRuleGroupStatement": {
+                        "vendorName": "AWS",
+                        "name": "AWSManagedRulesAmazonIpReputationList",
+                        "excludedRules": []
+                      }
+                    },
+                    "overrideAction": {
+                      "none": {}
+                    },
+                    "visibilityConfig": {
+                      "sampledRequestsEnabled": true,
+                      "cloudWatchMetricsEnabled": true,
+                      "metricName": "AWS-AWSManagedRulesAmazonIpReputationList-metrics"
+                    }
+                  }
+                ],
+                "scope": "CLOUDFRONT",
+                "visibilityConfig": {
+                  "sampledRequestsEnabled": true,
+                  "cloudWatchMetricsEnabled": true,
+                  "metricName": "moodle-waf-metrics"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_wafv2.CfnWebACL",
+              "version": "2.151.0"
+            }
+          },
+          "cf-waf-web-acl-arn-ssm-param": {
+            "id": "cf-waf-web-acl-arn-ssm-param",
+            "path": "cloudfront-waf-web-acl-stack/cf-waf-web-acl-arn-ssm-param",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "cloudfront-waf-web-acl-stack/cf-waf-web-acl-arn-ssm-param/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SSM::Parameter",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "The WAFv2 Web ACL used for CloudFront for Moodle",
+                    "name": "cf-waf-web-acl-arn",
+                    "type": "String",
+                    "value": {
+                      "Fn::GetAtt": [
+                        "cfwaf",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ssm.CfnParameter",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ssm.StringParameter",
+              "version": "2.151.0"
+            }
+          },
+          "CLOUDFRONT-WAF-WEB-ACL-ARN": {
+            "id": "CLOUDFRONT-WAF-WEB-ACL-ARN",
+            "path": "cloudfront-waf-web-acl-stack/CLOUDFRONT-WAF-WEB-ACL-ARN",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "cloudfront-waf-web-acl-stack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "cloudfront-waf-web-acl-stack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.160"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "cloudfront-waf-web-acl-stack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.151.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "cloudfront-waf-web-acl-stack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.151.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.151.0"
+        }
+      },
+      "ecs-moodle-stack": {
+        "id": "ecs-moodle-stack",
+        "path": "ecs-moodle-stack",
+        "children": {
+          "cloudtrail-bucket": {
+            "id": "cloudtrail-bucket",
+            "path": "ecs-moodle-stack/cloudtrail-bucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/cloudtrail-bucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "bucketEncryption": {
+                      "serverSideEncryptionConfiguration": [
+                        {
+                          "serverSideEncryptionByDefault": {
+                            "sseAlgorithm": "AES256"
+                          }
+                        }
+                      ]
+                    },
+                    "publicAccessBlockConfiguration": {
+                      "blockPublicAcls": true,
+                      "blockPublicPolicy": true,
+                      "ignorePublicAcls": true,
+                      "restrictPublicBuckets": true
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.151.0"
+                }
+              },
+              "Policy": {
+                "id": "Policy",
+                "path": "ecs-moodle-stack/cloudtrail-bucket/Policy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/cloudtrail-bucket/Policy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::S3::BucketPolicy",
+                      "aws:cdk:cloudformation:props": {
+                        "bucket": {
+                          "Ref": "cloudtrailbucket4E585F26"
+                        },
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "s3:*",
+                              "Condition": {
+                                "Bool": {
+                                  "aws:SecureTransport": "false"
+                                }
+                              },
+                              "Effect": "Deny",
+                              "Principal": {
+                                "AWS": "*"
+                              },
+                              "Resource": [
+                                {
+                                  "Fn::GetAtt": [
+                                    "cloudtrailbucket4E585F26",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "cloudtrailbucket4E585F26",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Action": "s3:GetBucketAcl",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "cloudtrail.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::GetAtt": [
+                                  "cloudtrailbucket4E585F26",
+                                  "Arn"
+                                ]
+                              }
+                            },
+                            {
+                              "Action": "s3:PutObject",
+                              "Condition": {
+                                "StringEquals": {
+                                  "s3:x-amz-acl": "bucket-owner-full-control"
+                                }
+                              },
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "cloudtrail.amazonaws.com"
+                              },
+                              "Resource": {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "cloudtrailbucket4E585F26",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "/AWSLogs/",
+                                    {
+                                      "Ref": "AWS::AccountId"
+                                    },
+                                    "/*"
+                                  ]
+                                ]
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.CfnBucketPolicy",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.BucketPolicy",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.151.0"
+            }
+          },
+          "cloudtrail-trail": {
+            "id": "cloudtrail-trail",
+            "path": "ecs-moodle-stack/cloudtrail-trail",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/cloudtrail-trail/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudTrail::Trail",
+                  "aws:cdk:cloudformation:props": {
+                    "enableLogFileValidation": true,
+                    "eventSelectors": [],
+                    "includeGlobalServiceEvents": true,
+                    "isLogging": true,
+                    "isMultiRegionTrail": true,
+                    "s3BucketName": {
+                      "Ref": "cloudtrailbucket4E585F26"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudtrail.CfnTrail",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudtrail.Trail",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-vpc": {
+            "id": "moodle-vpc",
+            "path": "ecs-moodle-stack/moodle-vpc",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-vpc/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPC",
+                  "aws:cdk:cloudformation:props": {
+                    "cidrBlock": "10.0.0.0/16",
+                    "enableDnsHostnames": true,
+                    "enableDnsSupport": true,
+                    "instanceTenancy": "default",
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "ecs-moodle-stack/moodle-vpc"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPC",
+                  "version": "2.151.0"
+                }
+              },
+              "PublicSubnet1": {
+                "id": "PublicSubnet1",
+                "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "cidrBlock": "10.0.0.0/18",
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "moodlevpcPublicSubnet1RouteTableC5B1D43E"
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPublicSubnet1SubnetCE2C1B1D"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "moodlevpcIGW63131C77"
+                        },
+                        "routeTableId": {
+                          "Ref": "moodlevpcPublicSubnet1RouteTableC5B1D43E"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet1"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnEIP",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet1/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "moodlevpcPublicSubnet1EIP526D377A",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPublicSubnet1SubnetCE2C1B1D"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet1"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnNatGateway",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+                  "version": "2.151.0"
+                }
+              },
+              "PublicSubnet2": {
+                "id": "PublicSubnet2",
+                "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "cidrBlock": "10.0.64.0/18",
+                        "mapPublicIpOnLaunch": true,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Public"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "moodlevpcPublicSubnet2RouteTable522FAD12"
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPublicSubnet2Subnet6F7768CB"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "gatewayId": {
+                          "Ref": "moodlevpcIGW63131C77"
+                        },
+                        "routeTableId": {
+                          "Ref": "moodlevpcPublicSubnet2RouteTable522FAD12"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "EIP": {
+                    "id": "EIP",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/EIP",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::EIP",
+                      "aws:cdk:cloudformation:props": {
+                        "domain": "vpc",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet2"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnEIP",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "NATGateway": {
+                    "id": "NATGateway",
+                    "path": "ecs-moodle-stack/moodle-vpc/PublicSubnet2/NATGateway",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::NatGateway",
+                      "aws:cdk:cloudformation:props": {
+                        "allocationId": {
+                          "Fn::GetAtt": [
+                            "moodlevpcPublicSubnet2EIPAC5EC96A",
+                            "AllocationId"
+                          ]
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPublicSubnet2Subnet6F7768CB"
+                        },
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PublicSubnet2"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnNatGateway",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PublicSubnet",
+                  "version": "2.151.0"
+                }
+              },
+              "PrivateSubnet1": {
+                "id": "PrivateSubnet1",
+                "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            0,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "cidrBlock": "10.0.128.0/18",
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "moodlevpcPrivateSubnet1RouteTableE7BD8FD7"
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet1/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "moodlevpcPublicSubnet1NATGatewayFD3ECE69"
+                        },
+                        "routeTableId": {
+                          "Ref": "moodlevpcPrivateSubnet1RouteTableE7BD8FD7"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+                  "version": "2.151.0"
+                }
+              },
+              "PrivateSubnet2": {
+                "id": "PrivateSubnet2",
+                "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2",
+                "children": {
+                  "Subnet": {
+                    "id": "Subnet",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2/Subnet",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Subnet",
+                      "aws:cdk:cloudformation:props": {
+                        "availabilityZone": {
+                          "Fn::Select": [
+                            1,
+                            {
+                              "Fn::GetAZs": ""
+                            }
+                          ]
+                        },
+                        "cidrBlock": "10.0.192.0/18",
+                        "mapPublicIpOnLaunch": false,
+                        "tags": [
+                          {
+                            "key": "aws-cdk:subnet-name",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "aws-cdk:subnet-type",
+                            "value": "Private"
+                          },
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnet",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Acl": {
+                    "id": "Acl",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2/Acl",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTable": {
+                    "id": "RouteTable",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2/RouteTable",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::RouteTable",
+                      "aws:cdk:cloudformation:props": {
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRouteTable",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "RouteTableAssociation": {
+                    "id": "RouteTableAssociation",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2/RouteTableAssociation",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SubnetRouteTableAssociation",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableId": {
+                          "Ref": "moodlevpcPrivateSubnet2RouteTableE8F2B71E"
+                        },
+                        "subnetId": {
+                          "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSubnetRouteTableAssociation",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "DefaultRoute": {
+                    "id": "DefaultRoute",
+                    "path": "ecs-moodle-stack/moodle-vpc/PrivateSubnet2/DefaultRoute",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::Route",
+                      "aws:cdk:cloudformation:props": {
+                        "destinationCidrBlock": "0.0.0.0/0",
+                        "natGatewayId": {
+                          "Ref": "moodlevpcPublicSubnet2NATGateway9CA8DD59"
+                        },
+                        "routeTableId": {
+                          "Ref": "moodlevpcPrivateSubnet2RouteTableE8F2B71E"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnRoute",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.PrivateSubnet",
+                  "version": "2.151.0"
+                }
+              },
+              "IGW": {
+                "id": "IGW",
+                "path": "ecs-moodle-stack/moodle-vpc/IGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::InternetGateway",
+                  "aws:cdk:cloudformation:props": {
+                    "tags": [
+                      {
+                        "key": "Name",
+                        "value": "ecs-moodle-stack/moodle-vpc"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnInternetGateway",
+                  "version": "2.151.0"
+                }
+              },
+              "VPCGW": {
+                "id": "VPCGW",
+                "path": "ecs-moodle-stack/moodle-vpc/VPCGW",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::VPCGatewayAttachment",
+                  "aws:cdk:cloudformation:props": {
+                    "internetGatewayId": {
+                      "Ref": "moodlevpcIGW63131C77"
+                    },
+                    "vpcId": {
+                      "Ref": "moodlevpcBC9D4C73"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnVPCGatewayAttachment",
+                  "version": "2.151.0"
+                }
+              },
+              "flowlog-to-cloudwatch": {
+                "id": "flowlog-to-cloudwatch",
+                "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch",
+                "children": {
+                  "IAMRole": {
+                    "id": "IAMRole",
+                    "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole",
+                    "children": {
+                      "ImportIAMRole": {
+                        "id": "ImportIAMRole",
+                        "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/ImportIAMRole",
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.Resource",
+                          "version": "2.151.0"
+                        }
+                      },
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                          "aws:cdk:cloudformation:props": {
+                            "assumeRolePolicyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {
+                                    "Service": "vpc-flow-logs.amazonaws.com"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                          "version": "2.151.0"
+                        }
+                      },
+                      "DefaultPolicy": {
+                        "id": "DefaultPolicy",
+                        "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/DefaultPolicy",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/DefaultPolicy/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": [
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents",
+                                        "logs:DescribeLogStreams"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": {
+                                        "Fn::GetAtt": [
+                                          "moodlevpcflowlogtocloudwatchLogGroup436624C1",
+                                          "Arn"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Action": "iam:PassRole",
+                                      "Effect": "Allow",
+                                      "Resource": {
+                                        "Fn::GetAtt": [
+                                          "moodlevpcflowlogtocloudwatchIAMRole9F81A053",
+                                          "Arn"
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                },
+                                "policyName": "moodlevpcflowlogtocloudwatchIAMRoleDefaultPolicy8B9F4BE3",
+                                "roles": [
+                                  {
+                                    "Ref": "moodlevpcflowlogtocloudwatchIAMRole9F81A053"
+                                  }
+                                ]
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                              "version": "2.151.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.Policy",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Role",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "LogGroup": {
+                    "id": "LogGroup",
+                    "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/LogGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/LogGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                          "aws:cdk:cloudformation:props": {
+                            "retentionInDays": 731,
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "FlowLog": {
+                    "id": "FlowLog",
+                    "path": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/FlowLog",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::FlowLog",
+                      "aws:cdk:cloudformation:props": {
+                        "deliverLogsPermissionArn": {
+                          "Fn::GetAtt": [
+                            "moodlevpcflowlogtocloudwatchIAMRole9F81A053",
+                            "Arn"
+                          ]
+                        },
+                        "logDestinationType": "cloud-watch-logs",
+                        "logGroupName": {
+                          "Ref": "moodlevpcflowlogtocloudwatchLogGroup436624C1"
+                        },
+                        "resourceId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        },
+                        "resourceType": "VPC",
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch"
+                          }
+                        ],
+                        "trafficType": "ALL"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnFlowLog",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.FlowLog",
+                  "version": "2.151.0"
+                }
+              },
+              "ecr-vpc-endpoint": {
+                "id": "ecr-vpc-endpoint",
+                "path": "ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint",
+                "children": {
+                  "SecurityGroup": {
+                    "id": "SecurityGroup",
+                    "path": "ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/SecurityGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/SecurityGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                          "aws:cdk:cloudformation:props": {
+                            "groupDescription": "ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/SecurityGroup",
+                            "securityGroupEgress": [
+                              {
+                                "cidrIp": "0.0.0.0/0",
+                                "description": "Allow all outbound traffic by default",
+                                "ipProtocol": "-1"
+                              }
+                            ],
+                            "securityGroupIngress": [
+                              {
+                                "cidrIp": {
+                                  "Fn::GetAtt": [
+                                    "moodlevpcBC9D4C73",
+                                    "CidrBlock"
+                                  ]
+                                },
+                                "ipProtocol": "tcp",
+                                "fromPort": 443,
+                                "toPort": 443,
+                                "description": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "from ",
+                                      {
+                                        "Fn::GetAtt": [
+                                          "moodlevpcBC9D4C73",
+                                          "CidrBlock"
+                                        ]
+                                      },
+                                      ":443"
+                                    ]
+                                  ]
+                                }
+                              }
+                            ],
+                            "tags": [
+                              {
+                                "key": "Name",
+                                "value": "ecs-moodle-stack/moodle-vpc"
+                              }
+                            ],
+                            "vpcId": {
+                              "Ref": "moodlevpcBC9D4C73"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
+                      "aws:cdk:cloudformation:props": {
+                        "privateDnsEnabled": true,
+                        "securityGroupIds": [
+                          {
+                            "Fn::GetAtt": [
+                              "moodlevpcecrvpcendpointSecurityGroup70984AF4",
+                              "GroupId"
+                            ]
+                          }
+                        ],
+                        "serviceName": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "com.amazonaws.",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              ".ecr.api"
+                            ]
+                          ]
+                        },
+                        "subnetIds": [
+                          {
+                            "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                          },
+                          {
+                            "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                          }
+                        ],
+                        "vpcEndpointType": "Interface",
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnVPCEndpoint",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.InterfaceVpcEndpoint",
+                  "version": "2.151.0"
+                }
+              },
+              "s3-vpc-endpoint": {
+                "id": "s3-vpc-endpoint",
+                "path": "ecs-moodle-stack/moodle-vpc/s3-vpc-endpoint",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-vpc/s3-vpc-endpoint/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
+                      "aws:cdk:cloudformation:props": {
+                        "routeTableIds": [
+                          {
+                            "Ref": "moodlevpcPrivateSubnet1RouteTableE7BD8FD7"
+                          },
+                          {
+                            "Ref": "moodlevpcPrivateSubnet2RouteTableE8F2B71E"
+                          },
+                          {
+                            "Ref": "moodlevpcPublicSubnet1RouteTableC5B1D43E"
+                          },
+                          {
+                            "Ref": "moodlevpcPublicSubnet2RouteTable522FAD12"
+                          }
+                        ],
+                        "serviceName": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "com.amazonaws.",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              ".s3"
+                            ]
+                          ]
+                        },
+                        "vpcEndpointType": "Gateway",
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnVPCEndpoint",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.GatewayVpcEndpoint",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.Vpc",
+              "version": "2.151.0"
+            }
+          },
+          "ecs-cluster": {
+            "id": "ecs-cluster",
+            "path": "ecs-moodle-stack/ecs-cluster",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/ecs-cluster/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::Cluster",
+                  "aws:cdk:cloudformation:props": {
+                    "clusterName": "moodle-ecs-cluster",
+                    "clusterSettings": [
+                      {
+                        "name": "containerInsights",
+                        "value": "enabled"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnCluster",
+                  "version": "2.151.0"
+                }
+              },
+              "ecs-cluster": {
+                "id": "ecs-cluster",
+                "path": "ecs-moodle-stack/ecs-cluster/ecs-cluster",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::ClusterCapacityProviderAssociations",
+                  "aws:cdk:cloudformation:props": {
+                    "capacityProviders": [
+                      "FARGATE",
+                      "FARGATE_SPOT"
+                    ],
+                    "cluster": {
+                      "Ref": "ecscluster7830E7B5"
+                    },
+                    "defaultCapacityProviderStrategy": []
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnClusterCapacityProviderAssociations",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.Cluster",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-db": {
+            "id": "moodle-db",
+            "path": "ecs-moodle-stack/moodle-db",
+            "children": {
+              "SubnetGroup": {
+                "id": "SubnetGroup",
+                "path": "ecs-moodle-stack/moodle-db/SubnetGroup",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "ecs-moodle-stack/moodle-db/SubnetGroup/Default",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::RDS::DBSubnetGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "dbSubnetGroupDescription": "Subnet group for moodle-db database",
+                        "subnetIds": [
+                          {
+                            "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                          },
+                          {
+                            "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_rds.CfnDBSubnetGroup",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.SubnetGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "ecs-moodle-stack/moodle-db/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-db/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "Security group for moodle-db database",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:{IndirectPort}": {
+                    "id": "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:{IndirectPort}",
+                    "path": "ecs-moodle-stack/moodle-db/SecurityGroup/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:{IndirectPort}",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "From Moodle ECS Service",
+                        "fromPort": {
+                          "Fn::GetAtt": [
+                            "moodledbEAC964EB",
+                            "Endpoint.Port"
+                          ]
+                        },
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "moodledbSecurityGroup0DFA55B1",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "moodleserviceSecurityGroup1CC37159",
+                            "GroupId"
+                          ]
+                        },
+                        "toPort": {
+                          "Fn::GetAtt": [
+                            "moodledbEAC964EB",
+                            "Endpoint.Port"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "Secret": {
+                "id": "Secret",
+                "path": "ecs-moodle-stack/moodle-db/Secret",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-db/Secret/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                      "aws:cdk:cloudformation:props": {
+                        "description": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "Generated by the CDK for stack: ",
+                              {
+                                "Ref": "AWS::StackName"
+                              }
+                            ]
+                          ]
+                        },
+                        "generateSecretString": {
+                          "passwordLength": 30,
+                          "secretStringTemplate": "{\"username\":\"dbadmin\"}",
+                          "generateStringKey": "password",
+                          "excludeCharacters": "(\" %+~`#$&*()|[]{}:;<>?!'/^-,@_=\\"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Attachment": {
+                    "id": "Attachment",
+                    "path": "ecs-moodle-stack/moodle-db/Secret/Attachment",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-db/Secret/Attachment/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::SecretsManager::SecretTargetAttachment",
+                          "aws:cdk:cloudformation:props": {
+                            "secretId": {
+                              "Ref": "ecsmoodlestackmoodledbSecretDF9A532B38a0514b27838b1adcccf57602341508"
+                            },
+                            "targetId": {
+                              "Ref": "moodledbEAC964EB"
+                            },
+                            "targetType": "AWS::RDS::DBInstance"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecretTargetAttachment",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_secretsmanager.SecretTargetAttachment",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.DatabaseSecret",
+                  "version": "2.151.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-db/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::RDS::DBInstance",
+                  "aws:cdk:cloudformation:props": {
+                    "allocatedStorage": "20",
+                    "autoMinorVersionUpgrade": true,
+                    "backupRetentionPeriod": 7,
+                    "copyTagsToSnapshot": true,
+                    "dbInstanceClass": "db.t3.micro",
+                    "dbName": "moodledb",
+                    "dbSubnetGroupName": {
+                      "Ref": "moodledbSubnetGroup5287029B"
+                    },
+                    "enablePerformanceInsights": false,
+                    "engine": "mysql",
+                    "engineVersion": "8.0.32",
+                    "masterUsername": "dbadmin",
+                    "masterUserPassword": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "{{resolve:secretsmanager:",
+                          {
+                            "Ref": "ecsmoodlestackmoodledbSecretDF9A532B38a0514b27838b1adcccf57602341508"
+                          },
+                          ":SecretString:password::}}"
+                        ]
+                      ]
+                    },
+                    "maxAllocatedStorage": 200,
+                    "multiAz": false,
+                    "publiclyAccessible": false,
+                    "storageEncrypted": true,
+                    "storageType": "gp2",
+                    "vpcSecurityGroups": [
+                      {
+                        "Fn::GetAtt": [
+                          "moodledbSecurityGroup0DFA55B1",
+                          "GroupId"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_rds.CfnDBInstance",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_rds.DatabaseInstance",
+              "version": "2.151.0"
+            }
+          },
+          "rds-event-subscription-topic": {
+            "id": "rds-event-subscription-topic",
+            "path": "ecs-moodle-stack/rds-event-subscription-topic",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/rds-event-subscription-topic/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.CfnTopic",
+                  "version": "2.151.0"
+                }
+              },
+              "user@example.com": {
+                "id": "user@example.com",
+                "path": "ecs-moodle-stack/rds-event-subscription-topic/user@example.com",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/rds-event-subscription-topic/user@example.com/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::SNS::Subscription",
+                      "aws:cdk:cloudformation:props": {
+                        "endpoint": "user@example.com",
+                        "protocol": "email",
+                        "topicArn": {
+                          "Ref": "rdseventsubscriptiontopicFF8A7653"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_sns.CfnSubscription",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.Subscription",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.Topic",
+              "version": "2.151.0"
+            }
+          },
+          "rds-event-subscription": {
+            "id": "rds-event-subscription",
+            "path": "ecs-moodle-stack/rds-event-subscription",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::RDS::EventSubscription",
+              "aws:cdk:cloudformation:props": {
+                "enabled": true,
+                "eventCategories": [
+                  "availability",
+                  "configuration change",
+                  "failure",
+                  "maintenance",
+                  "low storage"
+                ],
+                "snsTopicArn": {
+                  "Ref": "rdseventsubscriptiontopicFF8A7653"
+                },
+                "sourceType": "db-instance"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_rds.CfnEventSubscription",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-efs": {
+            "id": "moodle-efs",
+            "path": "ecs-moodle-stack/moodle-efs",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-efs/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EFS::FileSystem",
+                  "aws:cdk:cloudformation:props": {
+                    "backupPolicy": {
+                      "status": "ENABLED"
+                    },
+                    "encrypted": true,
+                    "lifecyclePolicies": [
+                      {
+                        "transitionToIa": "AFTER_30_DAYS"
+                      },
+                      {
+                        "transitionToPrimaryStorageClass": "AFTER_1_ACCESS"
+                      }
+                    ],
+                    "performanceMode": "generalPurpose",
+                    "fileSystemTags": [
+                      {
+                        "key": "Name",
+                        "value": "ecs-moodle-stack/moodle-efs"
+                      }
+                    ],
+                    "throughputMode": "elastic"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_efs.CfnFileSystem",
+                  "version": "2.151.0"
+                }
+              },
+              "EfsSecurityGroup": {
+                "id": "EfsSecurityGroup",
+                "path": "ecs-moodle-stack/moodle-efs/EfsSecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-efs/EfsSecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "ecs-moodle-stack/moodle-efs/EfsSecurityGroup",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-efs"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:2049": {
+                    "id": "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:2049",
+                    "path": "ecs-moodle-stack/moodle-efs/EfsSecurityGroup/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:2049",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "From Moodle ECS Service",
+                        "fromPort": 2049,
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "moodleefsEfsSecurityGroup623A28C8",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "moodleserviceSecurityGroup1CC37159",
+                            "GroupId"
+                          ]
+                        },
+                        "toPort": 2049
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "EfsMountTarget1": {
+                "id": "EfsMountTarget1",
+                "path": "ecs-moodle-stack/moodle-efs/EfsMountTarget1",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EFS::MountTarget",
+                  "aws:cdk:cloudformation:props": {
+                    "fileSystemId": {
+                      "Ref": "moodleefs5D41A69F"
+                    },
+                    "securityGroups": [
+                      {
+                        "Fn::GetAtt": [
+                          "moodleefsEfsSecurityGroup623A28C8",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_efs.CfnMountTarget",
+                  "version": "2.151.0"
+                }
+              },
+              "EfsMountTarget2": {
+                "id": "EfsMountTarget2",
+                "path": "ecs-moodle-stack/moodle-efs/EfsMountTarget2",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EFS::MountTarget",
+                  "aws:cdk:cloudformation:props": {
+                    "fileSystemId": {
+                      "Ref": "moodleefs5D41A69F"
+                    },
+                    "securityGroups": [
+                      {
+                        "Fn::GetAtt": [
+                          "moodleefsEfsSecurityGroup623A28C8",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnetId": {
+                      "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_efs.CfnMountTarget",
+                  "version": "2.151.0"
+                }
+              },
+              "moodle-efs-access-point": {
+                "id": "moodle-efs-access-point",
+                "path": "ecs-moodle-stack/moodle-efs/moodle-efs-access-point",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-efs/moodle-efs-access-point/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EFS::AccessPoint",
+                      "aws:cdk:cloudformation:props": {
+                        "fileSystemId": {
+                          "Ref": "moodleefs5D41A69F"
+                        },
+                        "rootDirectory": {
+                          "path": "/"
+                        },
+                        "accessPointTags": [
+                          {
+                            "key": "Name",
+                            "value": "ecs-moodle-stack/moodle-efs/moodle-efs-access-point"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_efs.CfnAccessPoint",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_efs.AccessPoint",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_efs.FileSystem",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-redis-sg": {
+            "id": "moodle-redis-sg",
+            "path": "ecs-moodle-stack/moodle-redis-sg",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-redis-sg/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "ecs-moodle-stack/moodle-redis-sg",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "vpcId": {
+                      "Ref": "moodlevpcBC9D4C73"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:6379": {
+                "id": "from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:6379",
+                "path": "ecs-moodle-stack/moodle-redis-sg/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:6379",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "From Moodle ECS Service",
+                    "fromPort": 6379,
+                    "groupId": {
+                      "Fn::GetAtt": [
+                        "moodleredissgEE874356",
+                        "GroupId"
+                      ]
+                    },
+                    "ipProtocol": "tcp",
+                    "sourceSecurityGroupId": {
+                      "Fn::GetAtt": [
+                        "moodleserviceSecurityGroup1CC37159",
+                        "GroupId"
+                      ]
+                    },
+                    "toPort": 6379
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.151.0"
+            }
+          },
+          "redis-subnet-group1": {
+            "id": "redis-subnet-group1",
+            "path": "ecs-moodle-stack/redis-subnet-group1",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::ElastiCache::SubnetGroup",
+              "aws:cdk:cloudformation:props": {
+                "cacheSubnetGroupName": "ecsmoodlestack-redis-subnet-group1",
+                "description": "Moodle Redis Subnet Group",
+                "subnetIds": [
+                  {
+                    "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                  },
+                  {
+                    "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                  }
+                ]
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_elasticache.CfnSubnetGroup",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-redis": {
+            "id": "moodle-redis",
+            "path": "ecs-moodle-stack/moodle-redis",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::ElastiCache::ReplicationGroup",
+              "aws:cdk:cloudformation:props": {
+                "atRestEncryptionEnabled": true,
+                "automaticFailoverEnabled": false,
+                "autoMinorVersionUpgrade": true,
+                "cacheNodeType": "cache.t3.micro",
+                "cacheSubnetGroupName": "ecsmoodlestack-redis-subnet-group1",
+                "engine": "redis",
+                "multiAzEnabled": false,
+                "numCacheClusters": 1,
+                "replicationGroupDescription": "Moodle Redis",
+                "securityGroupIds": [
+                  {
+                    "Fn::GetAtt": [
+                      "moodleredissgEE874356",
+                      "GroupId"
+                    ]
+                  }
+                ]
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_elasticache.CfnReplicationGroup",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-task-def": {
+            "id": "moodle-task-def",
+            "path": "ecs-moodle-stack/moodle-task-def",
+            "children": {
+              "TaskRole": {
+                "id": "TaskRole",
+                "path": "ecs-moodle-stack/moodle-task-def/TaskRole",
+                "children": {
+                  "ImportTaskRole": {
+                    "id": "ImportTaskRole",
+                    "path": "ecs-moodle-stack/moodle-task-def/TaskRole/ImportTaskRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-task-def/TaskRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "ecs-tasks.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.151.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-task-def/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::TaskDefinition",
+                  "aws:cdk:cloudformation:props": {
+                    "containerDefinitions": [
+                      {
+                        "essential": true,
+                        "image": "024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest",
+                        "memory": 4096,
+                        "mountPoints": [
+                          {
+                            "containerPath": "/bitnami",
+                            "readOnly": false,
+                            "sourceVolume": "moodle"
+                          }
+                        ],
+                        "name": "moodle",
+                        "portMappings": [
+                          {
+                            "containerPort": 8080,
+                            "protocol": "tcp"
+                          }
+                        ],
+                        "stopTimeout": 120,
+                        "logConfiguration": {
+                          "logDriver": "awslogs",
+                          "options": {
+                            "awslogs-group": {
+                              "Ref": "moodletaskdefmoodlecontainerLogGroup581119A2"
+                            },
+                            "awslogs-stream-prefix": "ecs-moodle",
+                            "awslogs-region": {
+                              "Ref": "AWS::Region"
+                            }
+                          }
+                        },
+                        "environment": [
+                          {
+                            "name": "MOODLE_DATABASE_TYPE",
+                            "value": "mysqli"
+                          },
+                          {
+                            "name": "MOODLE_DATABASE_HOST",
+                            "value": {
+                              "Fn::GetAtt": [
+                                "moodledbEAC964EB",
+                                "Endpoint.Address"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "MOODLE_DATABASE_PORT_NUMBER",
+                            "value": {
+                              "Fn::GetAtt": [
+                                "moodledbEAC964EB",
+                                "Endpoint.Port"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "MOODLE_DATABASE_NAME",
+                            "value": "moodledb"
+                          },
+                          {
+                            "name": "MOODLE_DATABASE_USER",
+                            "value": "dbadmin"
+                          },
+                          {
+                            "name": "MOODLE_USERNAME",
+                            "value": "moodleadmin"
+                          },
+                          {
+                            "name": "MOODLE_EMAIL",
+                            "value": "hello@example.com"
+                          },
+                          {
+                            "name": "MOODLE_SITE_NAME",
+                            "value": "Scalable Moodle on ECS Fargate"
+                          },
+                          {
+                            "name": "MOODLE_SKIP_BOOTSTRAP",
+                            "value": "no"
+                          },
+                          {
+                            "name": "MOODLE_SKIP_INSTALL",
+                            "value": "no"
+                          },
+                          {
+                            "name": "BITNAMI_DEBUG",
+                            "value": "true"
+                          }
+                        ],
+                        "secrets": [
+                          {
+                            "name": "MOODLE_DATABASE_PASSWORD",
+                            "valueFrom": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  {
+                                    "Ref": "moodledbSecretAttachmentF9314C55"
+                                  },
+                                  ":password::"
+                                ]
+                              ]
+                            }
+                          },
+                          {
+                            "name": "MOODLE_PASSWORD",
+                            "valueFrom": {
+                              "Ref": "moodlepasswordsecret585482A0"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    "cpu": "2048",
+                    "executionRoleArn": {
+                      "Fn::GetAtt": [
+                        "moodletaskdefExecutionRole4692C07D",
+                        "Arn"
+                      ]
+                    },
+                    "family": "ecsmoodlestackmoodletaskdef3B550A0F",
+                    "memory": "4096",
+                    "networkMode": "awsvpc",
+                    "requiresCompatibilities": [
+                      "FARGATE"
+                    ],
+                    "taskRoleArn": {
+                      "Fn::GetAtt": [
+                        "moodletaskdefTaskRoleD0BAB4BB",
+                        "Arn"
+                      ]
+                    },
+                    "volumes": [
+                      {
+                        "name": "moodle",
+                        "efsVolumeConfiguration": {
+                          "filesystemId": {
+                            "Ref": "moodleefs5D41A69F"
+                          },
+                          "authorizationConfig": {
+                            "accessPointId": {
+                              "Ref": "moodleefsmoodleefsaccesspoint838A8304"
+                            }
+                          },
+                          "transitEncryption": "ENABLED"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnTaskDefinition",
+                  "version": "2.151.0"
+                }
+              },
+              "ExecutionRole": {
+                "id": "ExecutionRole",
+                "path": "ecs-moodle-stack/moodle-task-def/ExecutionRole",
+                "children": {
+                  "ImportExecutionRole": {
+                    "id": "ImportExecutionRole",
+                    "path": "ecs-moodle-stack/moodle-task-def/ExecutionRole/ImportExecutionRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-task-def/ExecutionRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "ecs-tasks.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "ecs-moodle-stack/moodle-task-def/ExecutionRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-task-def/ExecutionRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "ecr:GetAuthorizationToken",
+                                    "ecr:BatchCheckLayerAvailability",
+                                    "ecr:GetDownloadUrlForLayer",
+                                    "ecr:BatchGetImage",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": [
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "moodletaskdefmoodlecontainerLogGroup581119A2",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "secretsmanager:GetSecretValue",
+                                    "secretsmanager:DescribeSecret"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Ref": "moodledbSecretAttachmentF9314C55"
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "secretsmanager:GetSecretValue",
+                                    "secretsmanager:DescribeSecret"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Ref": "moodlepasswordsecret585482A0"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "moodletaskdefExecutionRoleDefaultPolicy6167E6A2",
+                            "roles": [
+                              {
+                                "Ref": "moodletaskdefExecutionRole4692C07D"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.151.0"
+                }
+              },
+              "moodle-container": {
+                "id": "moodle-container",
+                "path": "ecs-moodle-stack/moodle-task-def/moodle-container",
+                "children": {
+                  "LogGroup": {
+                    "id": "LogGroup",
+                    "path": "ecs-moodle-stack/moodle-task-def/moodle-container/LogGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-task-def/moodle-container/LogGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
+                          "aws:cdk:cloudformation:props": {}
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_logs.CfnLogGroup",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_logs.LogGroup",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.ContainerDefinition",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.FargateTaskDefinition",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-password-secret": {
+            "id": "moodle-password-secret",
+            "path": "ecs-moodle-stack/moodle-password-secret",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-password-secret/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "generateSecretString": {}
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-service": {
+            "id": "moodle-service",
+            "path": "ecs-moodle-stack/moodle-service",
+            "children": {
+              "Service": {
+                "id": "Service",
+                "path": "ecs-moodle-stack/moodle-service/Service",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ECS::Service",
+                  "aws:cdk:cloudformation:props": {
+                    "capacityProviderStrategy": [
+                      {
+                        "capacityProvider": "FARGATE_SPOT",
+                        "weight": 3
+                      },
+                      {
+                        "capacityProvider": "FARGATE",
+                        "weight": 1
+                      }
+                    ],
+                    "cluster": {
+                      "Ref": "ecscluster7830E7B5"
+                    },
+                    "deploymentConfiguration": {
+                      "maximumPercent": 200,
+                      "minimumHealthyPercent": 50,
+                      "deploymentCircuitBreaker": {
+                        "enable": true,
+                        "rollback": true
+                      },
+                      "alarms": {
+                        "alarmNames": [],
+                        "enable": false,
+                        "rollback": false
+                      }
+                    },
+                    "deploymentController": {
+                      "type": "ECS"
+                    },
+                    "desiredCount": 1,
+                    "enableEcsManagedTags": true,
+                    "healthCheckGracePeriodSeconds": 1800,
+                    "loadBalancers": [
+                      {
+                        "targetGroupArn": {
+                          "Ref": "moodlealbhttpslistenermoodleservicetgGroup52DC4313"
+                        },
+                        "containerName": "moodle",
+                        "containerPort": 8080
+                      }
+                    ],
+                    "networkConfiguration": {
+                      "awsvpcConfiguration": {
+                        "assignPublicIp": "DISABLED",
+                        "subnets": [
+                          {
+                            "Ref": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+                          },
+                          {
+                            "Ref": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+                          }
+                        ],
+                        "securityGroups": [
+                          {
+                            "Fn::GetAtt": [
+                              "moodleserviceSecurityGroup1CC37159",
+                              "GroupId"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "taskDefinition": {
+                      "Ref": "moodletaskdefCA53AB93"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.CfnService",
+                  "version": "2.151.0"
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "ecs-moodle-stack/moodle-service/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-service/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "ecs-moodle-stack/moodle-service/SecurityGroup",
+                        "securityGroupEgress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "description": "Allow all outbound traffic by default",
+                            "ipProtocol": "-1"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "from ecsmoodlestackmoodlealbSecurityGroupD1B05493:8080": {
+                    "id": "from ecsmoodlestackmoodlealbSecurityGroupD1B05493:8080",
+                    "path": "ecs-moodle-stack/moodle-service/SecurityGroup/from ecsmoodlestackmoodlealbSecurityGroupD1B05493:8080",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "Load balancer to target",
+                        "fromPort": 8080,
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "moodleserviceSecurityGroup1CC37159",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "sourceSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "moodlealbSecurityGroup1390F35A",
+                            "GroupId"
+                          ]
+                        },
+                        "toPort": 8080
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupIngress",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "ecs-moodle-stack/moodle-service/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.151.0"
+                }
+              },
+              "TaskCount": {
+                "id": "TaskCount",
+                "path": "ecs-moodle-stack/moodle-service/TaskCount",
+                "children": {
+                  "Target": {
+                    "id": "Target",
+                    "path": "ecs-moodle-stack/moodle-service/TaskCount/Target",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-service/TaskCount/Target/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalableTarget",
+                          "aws:cdk:cloudformation:props": {
+                            "maxCapacity": 5,
+                            "minCapacity": 1,
+                            "resourceId": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "service/",
+                                  {
+                                    "Ref": "ecscluster7830E7B5"
+                                  },
+                                  "/",
+                                  {
+                                    "Fn::GetAtt": [
+                                      "moodleserviceService319611B4",
+                                      "Name"
+                                    ]
+                                  }
+                                ]
+                              ]
+                            },
+                            "roleArn": {
+                              "Fn::Join": [
+                                "",
+                                [
+                                  "arn:",
+                                  {
+                                    "Ref": "AWS::Partition"
+                                  },
+                                  ":iam::",
+                                  {
+                                    "Ref": "AWS::AccountId"
+                                  },
+                                  ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+                                ]
+                              ]
+                            },
+                            "scalableDimension": "ecs:service:DesiredCount",
+                            "serviceNamespace": "ecs"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalableTarget",
+                          "version": "2.151.0"
+                        }
+                      },
+                      "cpu-scaling": {
+                        "id": "cpu-scaling",
+                        "path": "ecs-moodle-stack/moodle-service/TaskCount/Target/cpu-scaling",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "ecs-moodle-stack/moodle-service/TaskCount/Target/cpu-scaling/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyName": "ecsmoodlestackmoodleserviceTaskCountTargetcpuscaling44B2A72D",
+                                "policyType": "TargetTrackingScaling",
+                                "scalingTargetId": {
+                                  "Ref": "moodleserviceTaskCountTarget51B92049"
+                                },
+                                "targetTrackingScalingPolicyConfiguration": {
+                                  "predefinedMetricSpecification": {
+                                    "predefinedMetricType": "ECSServiceAverageCPUUtilization"
+                                  },
+                                  "targetValue": 50
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_applicationautoscaling.CfnScalingPolicy",
+                              "version": "2.151.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_applicationautoscaling.TargetTrackingScalingPolicy",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_applicationautoscaling.ScalableTarget",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecs.ScalableTaskCount",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ecs.FargateService",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-alb": {
+            "id": "moodle-alb",
+            "path": "ecs-moodle-stack/moodle-alb",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-alb/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+                  "aws:cdk:cloudformation:props": {
+                    "loadBalancerAttributes": [
+                      {
+                        "key": "deletion_protection.enabled",
+                        "value": "false"
+                      }
+                    ],
+                    "name": "moodle-ecs-alb",
+                    "scheme": "internet-facing",
+                    "securityGroups": [
+                      {
+                        "Fn::GetAtt": [
+                          "moodlealbSecurityGroup1390F35A",
+                          "GroupId"
+                        ]
+                      }
+                    ],
+                    "subnets": [
+                      {
+                        "Ref": "moodlevpcPublicSubnet1SubnetCE2C1B1D"
+                      },
+                      {
+                        "Ref": "moodlevpcPublicSubnet2Subnet6F7768CB"
+                      }
+                    ],
+                    "type": "application"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnLoadBalancer",
+                  "version": "2.151.0"
+                }
+              },
+              "SecurityGroup": {
+                "id": "SecurityGroup",
+                "path": "ecs-moodle-stack/moodle-alb/SecurityGroup",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-alb/SecurityGroup/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                      "aws:cdk:cloudformation:props": {
+                        "groupDescription": "Automatically created Security Group for ELB ecsmoodlestackmoodlealbD39E5E3A",
+                        "securityGroupIngress": [
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "ipProtocol": "tcp",
+                            "fromPort": 80,
+                            "toPort": 80,
+                            "description": "Allow from anyone on port 80"
+                          },
+                          {
+                            "cidrIp": "0.0.0.0/0",
+                            "ipProtocol": "tcp",
+                            "fromPort": 443,
+                            "toPort": 443,
+                            "description": "Allow from anyone on port 443"
+                          }
+                        ],
+                        "vpcId": {
+                          "Ref": "moodlevpcBC9D4C73"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "to ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:8080": {
+                    "id": "to ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:8080",
+                    "path": "ecs-moodle-stack/moodle-alb/SecurityGroup/to ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:8080",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupEgress",
+                      "aws:cdk:cloudformation:props": {
+                        "description": "Load balancer to target",
+                        "destinationSecurityGroupId": {
+                          "Fn::GetAtt": [
+                            "moodleserviceSecurityGroup1CC37159",
+                            "GroupId"
+                          ]
+                        },
+                        "fromPort": 8080,
+                        "groupId": {
+                          "Fn::GetAtt": [
+                            "moodlealbSecurityGroup1390F35A",
+                            "GroupId"
+                          ]
+                        },
+                        "ipProtocol": "tcp",
+                        "toPort": 8080
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroupEgress",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+                  "version": "2.151.0"
+                }
+              },
+              "http-listener": {
+                "id": "http-listener",
+                "path": "ecs-moodle-stack/moodle-alb/http-listener",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-alb/http-listener/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::Listener",
+                      "aws:cdk:cloudformation:props": {
+                        "defaultActions": [
+                          {
+                            "type": "redirect",
+                            "redirectConfig": {
+                              "statusCode": "HTTP_301",
+                              "port": "443",
+                              "protocol": "HTTPS"
+                            }
+                          }
+                        ],
+                        "loadBalancerArn": {
+                          "Ref": "moodlealbE438512E"
+                        },
+                        "port": 80,
+                        "protocol": "HTTP"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnListener",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationListener",
+                  "version": "2.151.0"
+                }
+              },
+              "https-listener": {
+                "id": "https-listener",
+                "path": "ecs-moodle-stack/moodle-alb/https-listener",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/moodle-alb/https-listener/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::Listener",
+                      "aws:cdk:cloudformation:props": {
+                        "certificates": [
+                          {
+                            "certificateArn": "arn:aws:acm:us-east-1:024848486969:certificate/987814d1-74a2-4e9f-bc5d-d5834d9c562d"
+                          }
+                        ],
+                        "defaultActions": [
+                          {
+                            "type": "forward",
+                            "targetGroupArn": {
+                              "Ref": "moodlealbhttpslistenermoodleservicetgGroup52DC4313"
+                            }
+                          }
+                        ],
+                        "loadBalancerArn": {
+                          "Ref": "moodlealbE438512E"
+                        },
+                        "port": 443,
+                        "protocol": "HTTPS"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnListener",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "moodle-service-tgGroup": {
+                    "id": "moodle-service-tgGroup",
+                    "path": "ecs-moodle-stack/moodle-alb/https-listener/moodle-service-tgGroup",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "ecs-moodle-stack/moodle-alb/https-listener/moodle-service-tgGroup/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+                          "aws:cdk:cloudformation:props": {
+                            "healthCheckTimeoutSeconds": 20,
+                            "port": 8080,
+                            "protocol": "HTTP",
+                            "targetGroupAttributes": [
+                              {
+                                "key": "stickiness.enabled",
+                                "value": "false"
+                              }
+                            ],
+                            "targetType": "ip",
+                            "vpcId": {
+                              "Ref": "moodlevpcBC9D4C73"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.CfnTargetGroup",
+                          "version": "2.151.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationTargetGroup",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationListener",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_elasticloadbalancingv2.ApplicationLoadBalancer",
+              "version": "2.151.0"
+            }
+          },
+          "cf-waf-web-acl-arn-ssm-param-reader": {
+            "id": "cf-waf-web-acl-arn-ssm-param-reader",
+            "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader",
+            "children": {
+              "Provider": {
+                "id": "Provider",
+                "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/Provider",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.SingletonFunction",
+                  "version": "2.151.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/Resource",
+                "children": {
+                  "Default": {
+                    "id": "Default",
+                    "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/Resource/Default",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.CfnResource",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CustomResource",
+                  "version": "2.151.0"
+                }
+              },
+              "CustomResourcePolicy": {
+                "id": "CustomResourcePolicy",
+                "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/CustomResourcePolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/CustomResourcePolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "ssm:GetParameter",
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "cfwafwebaclarnssmparamreaderCustomResourcePolicy083D1F23",
+                        "roles": [
+                          {
+                            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.custom_resources.AwsCustomResource",
+              "version": "2.151.0"
+            }
+          },
+          "LatestNodeRuntimeMap": {
+            "id": "LatestNodeRuntimeMap",
+            "path": "ecs-moodle-stack/LatestNodeRuntimeMap",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnMapping",
+              "version": "2.151.0"
+            }
+          },
+          "AWS679f53fac002430cb0da5b7982bd2287": {
+            "id": "AWS679f53fac002430cb0da5b7982bd2287",
+            "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole",
+                "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.151.0"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.151.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.151.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.151.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip"
+                    },
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": {
+                      "Fn::FindInMap": [
+                        "LatestNodeRuntimeMap",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        "value"
+                      ]
+                    },
+                    "timeout": 120
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.151.0"
+            }
+          },
+          "cFcert": {
+            "id": "cFcert",
+            "path": "ecs-moodle-stack/cFcert",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.151.0"
+            }
+          },
+          "moodle-ecs-dist": {
+            "id": "moodle-ecs-dist",
+            "path": "ecs-moodle-stack/moodle-ecs-dist",
+            "children": {
+              "Origin1": {
+                "id": "Origin1",
+                "path": "ecs-moodle-stack/moodle-ecs-dist/Origin1",
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.1.160"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "ecs-moodle-stack/moodle-ecs-dist/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CloudFront::Distribution",
+                  "aws:cdk:cloudformation:props": {
+                    "distributionConfig": {
+                      "enabled": true,
+                      "origins": [
+                        {
+                          "domainName": {
+                            "Fn::GetAtt": [
+                              "moodlealbE438512E",
+                              "DNSName"
+                            ]
+                          },
+                          "id": "ecsmoodlestackmoodleecsdistOrigin1C2737DD0",
+                          "customOriginConfig": {
+                            "originSslProtocols": [
+                              "TLSv1.2"
+                            ],
+                            "originProtocolPolicy": "https-only",
+                            "originReadTimeout": 60
+                          }
+                        }
+                      ],
+                      "defaultCacheBehavior": {
+                        "pathPattern": "*",
+                        "targetOriginId": "ecsmoodlestackmoodleecsdistOrigin1C2737DD0",
+                        "allowedMethods": [
+                          "GET",
+                          "HEAD",
+                          "OPTIONS",
+                          "PUT",
+                          "PATCH",
+                          "POST",
+                          "DELETE"
+                        ],
+                        "cachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+                        "compress": true,
+                        "originRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3",
+                        "viewerProtocolPolicy": "redirect-to-https"
+                      },
+                      "aliases": [
+                        "muhammadshehzad.com"
+                      ],
+                      "httpVersion": "http2",
+                      "ipv6Enabled": true,
+                      "viewerCertificate": {
+                        "acmCertificateArn": "arn:aws:acm:us-east-1:024848486969:certificate/fc242769-4e0c-4601-9679-cb300ad84445",
+                        "minimumProtocolVersion": "TLSv1.2_2021",
+                        "sslSupportMethod": "sni-only"
+                      },
+                      "webAclId": {
+                        "Fn::GetAtt": [
+                          "cfwafwebaclarnssmparamreader5DB5C115",
+                          "Parameter.Value"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_cloudfront.CfnDistribution",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_cloudfront.Distribution",
+              "version": "2.151.0"
+            }
+          },
+          "APPLICATION-LOAD-BALANCER-DNS-NAME": {
+            "id": "APPLICATION-LOAD-BALANCER-DNS-NAME",
+            "path": "ecs-moodle-stack/APPLICATION-LOAD-BALANCER-DNS-NAME",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "CLOUDFRONT-DNS-NAME": {
+            "id": "CLOUDFRONT-DNS-NAME",
+            "path": "ecs-moodle-stack/CLOUDFRONT-DNS-NAME",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "MOODLE-USERNAME": {
+            "id": "MOODLE-USERNAME",
+            "path": "ecs-moodle-stack/MOODLE-USERNAME",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "MOODLE-PASSWORD-SECRET-ARN": {
+            "id": "MOODLE-PASSWORD-SECRET-ARN",
+            "path": "ecs-moodle-stack/MOODLE-PASSWORD-SECRET-ARN",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "MOODLE-REDIS-PRIMARY-ENDPOINT-ADDRESS-AND-PORT": {
+            "id": "MOODLE-REDIS-PRIMARY-ENDPOINT-ADDRESS-AND-PORT",
+            "path": "ecs-moodle-stack/MOODLE-REDIS-PRIMARY-ENDPOINT-ADDRESS-AND-PORT",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "ECS-CLUSTER-NAME": {
+            "id": "ECS-CLUSTER-NAME",
+            "path": "ecs-moodle-stack/ECS-CLUSTER-NAME",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "ECS-VPC-ID": {
+            "id": "ECS-VPC-ID",
+            "path": "ecs-moodle-stack/ECS-VPC-ID",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "MOODLE-SERVICE-NAME": {
+            "id": "MOODLE-SERVICE-NAME",
+            "path": "ecs-moodle-stack/MOODLE-SERVICE-NAME",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "MOODLE-CLOUDFRONT-DIST-ID": {
+            "id": "MOODLE-CLOUDFRONT-DIST-ID",
+            "path": "ecs-moodle-stack/MOODLE-CLOUDFRONT-DIST-ID",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.151.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "ecs-moodle-stack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "ecs-moodle-stack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.151.0"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "ecs-moodle-stack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.151.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.160"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "ecs-moodle-stack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.151.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "ecs-moodle-stack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.151.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.151.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.1.160"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.151.0"
+    }
+  }
+}

@@ -1,1 +1,4 @@
-# Serverless_Moodle_LMS_on_Fargate
+# Serverless hosting of Moodle LMS on AWS using Fargate
+
+## Architecture
+![alt text](Architecture-v1.drawio.png)
