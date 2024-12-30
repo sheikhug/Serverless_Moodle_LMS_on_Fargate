@@ -1,0 +1,723 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "cloudfront-waf-web-acl-stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "cloudfront-waf-web-acl-stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "cloudfront-waf-web-acl-stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/us-east-1",
+      "properties": {
+        "templateFile": "cloudfront-waf-web-acl-stack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-us-east-1/1eabcb72ad0c9059ad918c0807ddb57aa4c43696d01b845f034b049229870221.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "cloudfront-waf-web-acl-stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "cloudfront-waf-web-acl-stack.assets"
+      ],
+      "metadata": {
+        "/cloudfront-waf-web-acl-stack/cf-waf": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cfwaf"
+          }
+        ],
+        "/cloudfront-waf-web-acl-stack/cf-waf-web-acl-arn-ssm-param/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cfwafwebaclarnssmparamD31AC3E9"
+          }
+        ],
+        "/cloudfront-waf-web-acl-stack/CLOUDFRONT-WAF-WEB-ACL-ARN": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CLOUDFRONTWAFWEBACLARN"
+          }
+        ],
+        "/cloudfront-waf-web-acl-stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/cloudfront-waf-web-acl-stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/cloudfront-waf-web-acl-stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "cloudfront-waf-web-acl-stack"
+    },
+    "ecs-moodle-stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ecs-moodle-stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ecs-moodle-stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ecs-moodle-stack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/973a495dc8eec69a7b46291ff0e0ee56a37c4c3685b9e64aff426cef2be4a623.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ecs-moodle-stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "cloudfront-waf-web-acl-stack",
+        "ecs-moodle-stack.assets"
+      ],
+      "metadata": {
+        "/ecs-moodle-stack/cloudtrail-bucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cloudtrailbucket4E585F26"
+          }
+        ],
+        "/ecs-moodle-stack/cloudtrail-bucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cloudtrailbucketPolicy484D0FE7"
+          }
+        ],
+        "/ecs-moodle-stack/cloudtrail-trail/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cloudtrailtrail59842059"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcBC9D4C73"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1SubnetCE2C1B1D"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1RouteTableC5B1D43E"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1RouteTableAssociation8A8F75AB"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1DefaultRoute19382C66"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1EIP526D377A"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet1NATGatewayFD3ECE69"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2Subnet6F7768CB"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2RouteTable522FAD12"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2RouteTableAssociation85142B0A"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2DefaultRoute051774FE"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2EIPAC5EC96A"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPublicSubnet2NATGateway9CA8DD59"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet1SubnetEF479E8E"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet1RouteTableE7BD8FD7"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet1RouteTableAssociationA7848358"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet1DefaultRouteC10F66ED"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet2Subnet9E0A2679"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet2RouteTableE8F2B71E"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet2RouteTableAssociation0D77E104"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcPrivateSubnet2DefaultRoute397D30FC"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcIGW63131C77"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcVPCGW70A0E41B"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcflowlogtocloudwatchIAMRole9F81A053"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/IAMRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcflowlogtocloudwatchIAMRoleDefaultPolicy8B9F4BE3"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcflowlogtocloudwatchLogGroup436624C1"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/flowlog-to-cloudwatch/FlowLog": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcflowlogtocloudwatchFlowLogCF7FFF52"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcecrvpcendpointSecurityGroup70984AF4"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/ecr-vpc-endpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcecrvpcendpoint6B3F6EEB"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-vpc/s3-vpc-endpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlevpcs3vpcendpointC32B0DBA"
+          }
+        ],
+        "/ecs-moodle-stack/ecs-cluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecscluster7830E7B5"
+          }
+        ],
+        "/ecs-moodle-stack/ecs-cluster/ecs-cluster": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsclusterB48992C7"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodledbSubnetGroup5287029B"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodledbSecurityGroup0DFA55B1"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/SecurityGroup/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:{IndirectPort}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodledbSecurityGroupfromecsmoodlestackmoodleserviceSecurityGroup0F4C52F6IndirectPort288C40CD"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ecsmoodlestackmoodledbSecretDF9A532B38a0514b27838b1adcccf57602341508"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodledbSecretAttachmentF9314C55"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-db/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodledbEAC964EB"
+          }
+        ],
+        "/ecs-moodle-stack/rds-event-subscription-topic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rdseventsubscriptiontopicFF8A7653"
+          }
+        ],
+        "/ecs-moodle-stack/rds-event-subscription-topic/user@example.com/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rdseventsubscriptiontopicuserexamplecomCF3BE667"
+          }
+        ],
+        "/ecs-moodle-stack/rds-event-subscription": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "rdseventsubscription"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefs5D41A69F"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/EfsSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefsEfsSecurityGroup623A28C8"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/EfsSecurityGroup/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:2049": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefsEfsSecurityGroupfromecsmoodlestackmoodleserviceSecurityGroup0F4C52F620496D755305"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/EfsMountTarget1": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefsEfsMountTarget1357A6E82"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/EfsMountTarget2": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefsEfsMountTarget27DA2EDDA"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-efs/moodle-efs-access-point/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleefsmoodleefsaccesspoint838A8304"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-redis-sg/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleredissgEE874356"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-redis-sg/from ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:6379": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleredissgfromecsmoodlestackmoodleserviceSecurityGroup0F4C52F663792A177E77"
+          }
+        ],
+        "/ecs-moodle-stack/redis-subnet-group1": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "redissubnetgroup1"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-redis": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleredis"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodletaskdefTaskRoleD0BAB4BB"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodletaskdefCA53AB93"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodletaskdefExecutionRole4692C07D"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodletaskdefExecutionRoleDefaultPolicy6167E6A2"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/moodle-container": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Proper policies need to be attached before pulling from ECR repository, or use 'fromEcrRepository'. [ack: @aws-cdk/aws-ecs:ecrImageRequiresPolicy]",
+            "trace": [
+              "Annotations.addMessage (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "RepositoryImage.bind (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/aws-ecs/lib/images/repository.js:1:1306)",
+              "new ContainerDefinition (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/aws-ecs/lib/container-definition.js:1:3120)",
+              "FargateTaskDefinition.addContainer (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/aws-ecs/lib/base/task-definition.js:1:9971)",
+              "new EcsMoodleStack (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/lib/ecs-moodle-stack.ts:176:60)",
+              "Object.<anonymous> (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/bin/cdk.ts:14:24)",
+              "Module._compile (node:internal/modules/cjs/loader:1434:14)",
+              "Module.m._compile (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/index.ts:1618:23)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1518:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1249:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1065:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:158:12)",
+              "phase4 (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:649:14)",
+              "bootstrap (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:95:10)",
+              "main (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:55:10)",
+              "Object.<anonymous> (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1434:14)",
+              "Object.Module._extensions..js (node:internal/modules/cjs/loader:1518:10)",
+              "Module.load (node:internal/modules/cjs/loader:1249:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1065:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:158:12)",
+              "node:internal/main/run_main_module:30:49"
+            ]
+          }
+        ],
+        "/ecs-moodle-stack/moodle-task-def/moodle-container/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodletaskdefmoodlecontainerLogGroup581119A2"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-password-secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlepasswordsecret585482A0"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-service/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleserviceService319611B4"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-service/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleserviceSecurityGroup1CC37159"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-service/SecurityGroup/from ecsmoodlestackmoodlealbSecurityGroupD1B05493:8080": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleserviceSecurityGroupfromecsmoodlestackmoodlealbSecurityGroupD1B054938080F4A4D01E"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-service/TaskCount/Target/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleserviceTaskCountTarget51B92049"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-service/TaskCount/Target/cpu-scaling/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleserviceTaskCountTargetcpuscaling0E544F71"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbE438512E"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbSecurityGroup1390F35A"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/SecurityGroup/to ecsmoodlestackmoodleserviceSecurityGroup0F4C52F6:8080": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbSecurityGrouptoecsmoodlestackmoodleserviceSecurityGroup0F4C52F680809FA1F0FC"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/http-listener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbhttplistener0E76609D"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/https-listener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbhttpslistenerE4F4DA58"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-alb/https-listener/moodle-service-tgGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodlealbhttpslistenermoodleservicetgGroup52DC4313"
+          }
+        ],
+        "/ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "installLatestAwsSdk was not specified, and defaults to true. You probably do not want this. Set the global context flag '@aws-cdk/customresources:installLatestAwsSdkDefault' to false to switch this behavior off project-wide, or set the property explicitly to true if you know you need to call APIs that are not in Lambda's built-in SDK version. [ack: @aws-cdk/custom-resources:installLatestAwsSdkNotSpecified]",
+            "trace": [
+              "Annotations.addMessage (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "new AwsCustomResource (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/aws-cdk-lib/custom-resources/lib/aws-custom-resource/aws-custom-resource.js:1:5212)",
+              "new SSMParameterReader (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/lib/ssm-parameter-reader.ts:24:5)",
+              "new EcsMoodleStack (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/lib/ecs-moodle-stack.ts:279:34)",
+              "Object.<anonymous> (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/bin/cdk.ts:14:24)",
+              "Module._compile (node:internal/modules/cjs/loader:1434:14)",
+              "Module.m._compile (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/index.ts:1618:23)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1518:10)",
+              "Object.require.extensions.<computed> [as .ts] (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/index.ts:1621:12)",
+              "Module.load (node:internal/modules/cjs/loader:1249:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1065:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:158:12)",
+              "phase4 (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:649:14)",
+              "bootstrap (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:95:10)",
+              "main (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:55:10)",
+              "Object.<anonymous> (/Users/kk/Library/CloudStorage/GoogleDrive-engineershehzad117@gmail.com/My Drive/MonGoogleDrive/Miscelenous Personal Stuff/Trainings/AWS Projects/Serverless_Moodle_LMS_on_Fargate/cdk/node_modules/ts-node/src/bin.ts:800:3)",
+              "Module._compile (node:internal/modules/cjs/loader:1434:14)",
+              "Object.Module._extensions..js (node:internal/modules/cjs/loader:1518:10)",
+              "Module.load (node:internal/modules/cjs/loader:1249:32)",
+              "Function.Module._load (node:internal/modules/cjs/loader:1065:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:158:12)",
+              "node:internal/main/run_main_module:30:49"
+            ]
+          }
+        ],
+        "/ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/Resource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cfwafwebaclarnssmparamreader5DB5C115"
+          }
+        ],
+        "/ecs-moodle-stack/cf-waf-web-acl-arn-ssm-param-reader/CustomResourcePolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "cfwafwebaclarnssmparamreaderCustomResourcePolicy083D1F23"
+          }
+        ],
+        "/ecs-moodle-stack/LatestNodeRuntimeMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LatestNodeRuntimeMap"
+          }
+        ],
+        "/ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+          }
+        ],
+        "/ecs-moodle-stack/AWS679f53fac002430cb0da5b7982bd2287/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          }
+        ],
+        "/ecs-moodle-stack/moodle-ecs-dist/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moodleecsdistF1BF09A9"
+          }
+        ],
+        "/ecs-moodle-stack/APPLICATION-LOAD-BALANCER-DNS-NAME": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "APPLICATIONLOADBALANCERDNSNAME"
+          }
+        ],
+        "/ecs-moodle-stack/CLOUDFRONT-DNS-NAME": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CLOUDFRONTDNSNAME"
+          }
+        ],
+        "/ecs-moodle-stack/MOODLE-USERNAME": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MOODLEUSERNAME"
+          }
+        ],
+        "/ecs-moodle-stack/MOODLE-PASSWORD-SECRET-ARN": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MOODLEPASSWORDSECRETARN"
+          }
+        ],
+        "/ecs-moodle-stack/MOODLE-REDIS-PRIMARY-ENDPOINT-ADDRESS-AND-PORT": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MOODLEREDISPRIMARYENDPOINTADDRESSANDPORT"
+          }
+        ],
+        "/ecs-moodle-stack/ECS-CLUSTER-NAME": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ECSCLUSTERNAME"
+          }
+        ],
+        "/ecs-moodle-stack/ECS-VPC-ID": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ECSVPCID"
+          }
+        ],
+        "/ecs-moodle-stack/MOODLE-SERVICE-NAME": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MOODLESERVICENAME"
+          }
+        ],
+        "/ecs-moodle-stack/MOODLE-CLOUDFRONT-DIST-ID": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MOODLECLOUDFRONTDISTID"
+          }
+        ],
+        "/ecs-moodle-stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ecs-moodle-stack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ecs-moodle-stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ecs-moodle-stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ecs-moodle-stack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

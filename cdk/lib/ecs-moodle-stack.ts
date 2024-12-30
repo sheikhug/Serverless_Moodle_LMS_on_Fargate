@@ -41,8 +41,11 @@ export class EcsMoodleStack extends cdk.Stack {
     const trailBucket = new s3.Bucket(this, 'cloudtrail-bucket', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,
-      encryption: s3.BucketEncryption.S3_MANAGED
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true
     });
+
     const trail = new cloudtrail.Trail(this, 'cloudtrail-trail', {
       bucket: trailBucket
     });
@@ -77,23 +80,23 @@ export class EcsMoodleStack extends cdk.Stack {
     const moodleDb = new rds.DatabaseInstance(this, 'moodle-db', {
       engine: rds.DatabaseInstanceEngine.mysql({ version: rds.MysqlEngineVersion.VER_8_0_32}),
       vpc: vpc,
-      vpcSubnets: { 
-        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS
-      },
+      vpcSubnets: {subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS},
       instanceType: new ec2.InstanceType(props.rdsInstanceType),
-      allocatedStorage: 30,
-      maxAllocatedStorage: 300,
+      allocatedStorage: 20,
+      maxAllocatedStorage: 200,
       storageType: rds.StorageType.GP2,
       autoMinorVersionUpgrade: true,
-      multiAz: true,
+      multiAz: false,
       databaseName: this.MoodleDatabaseName,
       credentials: rds.Credentials.fromGeneratedSecret(this.MoodleDatabaseUsername, { excludeCharacters: '(" %+~`#$&*()|[]{}:;<>?!\'/^-,@_=\\' }), // Punctuations are causing issue with Moodle connecting to the database
-      enablePerformanceInsights: true,
+      enablePerformanceInsights: false,
       backupRetention: cdk.Duration.days(7),
       storageEncrypted: true
     });
+
     const rdsEventSubscriptionTopic = new sns.Topic(this, 'rds-event-subscription-topic', { });
     rdsEventSubscriptionTopic.addSubscription(new subscriptions.EmailSubscription(props.rdsEventSubscriptionEmailAddress));
+
     const rdsEventSubscription = new rds.CfnEventSubscription(this, 'rds-event-subscription', {
       enabled: true,
       snsTopicArn: rdsEventSubscriptionTopic.topicArn,
@@ -120,8 +123,8 @@ export class EcsMoodleStack extends cdk.Stack {
       vpc: vpc
     });
 
-    const redisSubnetGroup = new elasticache.CfnSubnetGroup(this, 'redis-subnet-group', {
-      cacheSubnetGroupName: `${cdk.Names.uniqueId(this)}-redis-subnet-group`,
+    const redisSubnetGroup = new elasticache.CfnSubnetGroup(this, 'redis-subnet-group1', {
+      cacheSubnetGroupName: `${cdk.Names.uniqueId(this)}-redis-subnet-group1`,
       description: 'Moodle Redis Subnet Group',
       subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS }).subnetIds
     });
@@ -130,11 +133,11 @@ export class EcsMoodleStack extends cdk.Stack {
       replicationGroupDescription: 'Moodle Redis',
       cacheNodeType: props.elastiCacheRedisInstanceType,
       engine: 'redis',
-      numCacheClusters: 2,
-      multiAzEnabled: true,
-      automaticFailoverEnabled: true,
+      numCacheClusters: 1,
+      multiAzEnabled: false,
+      automaticFailoverEnabled: false,
       autoMinorVersionUpgrade: true,
-      cacheSubnetGroupName: `${cdk.Names.uniqueId(this)}-redis-subnet-group`,
+      cacheSubnetGroupName: `${cdk.Names.uniqueId(this)}-redis-subnet-group1`,
       securityGroupIds: [ redisSG.securityGroupId ],
       atRestEncryptionEnabled: true
     });
@@ -169,6 +172,7 @@ export class EcsMoodleStack extends cdk.Stack {
         }
       }
     });
+
 
     // Moodle container definition
     const moodlePasswordSecret = new secretsmanager.Secret(this, 'moodle-password-secret');
@@ -226,11 +230,13 @@ export class EcsMoodleStack extends cdk.Stack {
       circuitBreaker: { rollback: true }
     });
 
+
     // Moodle ECS Service Task Auto Scaling
-    const moodleServiceScaling = moodleService.autoScaleTaskCount({ minCapacity: props.serviceReplicaDesiredCount, maxCapacity: 10 } );
+    const moodleServiceScaling = moodleService.autoScaleTaskCount({ minCapacity: props.serviceReplicaDesiredCount, maxCapacity: 5 } );
     moodleServiceScaling.scaleOnCpuUtilization('cpu-scaling', {
       targetUtilizationPercent: 50
     });
+
 
     // Allow access using Security Groups
     moodleDb.connections.allowDefaultPortFrom(moodleService, 'From Moodle ECS Service');
@@ -269,6 +275,8 @@ export class EcsMoodleStack extends cdk.Stack {
         timeout: cdk.Duration.seconds(20)
       }
     });
+
+
 
     // CloudFront distribution
     const cfWafWebAclArnReader = new SSMParameterReader(this, 'cf-waf-web-acl-arn-ssm-param-reader', {

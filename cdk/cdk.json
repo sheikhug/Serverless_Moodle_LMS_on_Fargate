@@ -11,15 +11,15 @@
     "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
     "@aws-cdk/aws-lambda:recognizeVersionProps": true,
     "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
-    "app-config/albCertificateArn": "",
-    "app-config/cfCertificateArn": "",
-    "app-config/cfDomain": "",
-    "app-config/moodleImageUri": "",
+    "app-config/albCertificateArn": "arn:aws:acm:us-east-1:024848486969:certificate/987814d1-74a2-4e9f-bc5d-d5834d9c562d",
+    "app-config/cfCertificateArn": "arn:aws:acm:us-east-1:024848486969:certificate/fc242769-4e0c-4601-9679-cb300ad84445",
+    "app-config/cfDomain": "muhammadshehzad.com",
+    "app-config/moodleImageUri": "024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest",
     "app-config/serviceReplicaDesiredCount": 1,
     "app-config/serviceHealthCheckGracePeriodSeconds": 1800,
     "app-config/cfDistributionOriginTimeoutSeconds": 60,
     "app-config/rdsEventSubscriptionEmailAddress": "user@example.com",
-    "app-config/rdsInstanceType": "r6g.large",
-    "app-config/elastiCacheRedisInstanceType": "cache.r6g.large"
+    "app-config/rdsInstanceType": "t3.micro",
+    "app-config/elastiCacheRedisInstanceType": "cache.t3.micro"
   }
 }

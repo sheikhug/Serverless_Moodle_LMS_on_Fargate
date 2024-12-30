@@ -1,6 +1,10 @@
 # Serverless hosting of Moodle LMS on AWS using Fargate
 -------------------------------------------------------
 
+### Architecture
+![alt text](Architecture-v1.drawio.png)
+
+
 ### Prerequisites
 
 1. [Install and configure AWS Command Line Interface (AWS CLI) with your AWS Identity and Access Management (IAM) user](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html).
@@ -25,15 +29,40 @@ Prior to deploying the solution, you must first build the Moodle container image
 
 1\. Open your preferred command line interface (CLI) such as Terminal or Command Prompt.
 
-2\. From the top directory of the source code, run the following to build the container image:docker build -t moodle-image src/image/src
+2\. From the top directory of the source code, run the following to build the container image:
 
-3\. Authenticate to your default AWS account registry:aws ecr get-login-password --region \[your-region\] | docker login --username AWS --password-stdin \[your-aws-account-id\].dkr.ecr.\[your-region\].amazonaws.com
+```
+docker build -t moodle-image src/image/src
+``` 
+or 
+```
+docker pull bitnami/moodle:latest
+```
 
-4\. Create a new ECR Repository to hold the image:aws ecr create-repository --repository-name moodle-image --region \[your-region\]
+3\. Authenticate to your default AWS account registry:
+```
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 024848486969.dkr.ecr.us-east-1.amazonaws.com
+```
 
-5\. Tag the image to push to your repository:docker tag moodle-image:latest \[your-aws-account-id\].dkr.ecr.\[your-region\].amazonaws.com/moodle-image:latest
+4\. Create a new ECR Repository to hold the image:
+```
+aws ecr create-repository --repository-name moodle-image --region us-east-1
+```
 
-6\. Push the image:docker push \[your-aws-account-id\].dkr.ecr.\[your-region\].amazonaws.com/moodle-image:latest
+5\. Tag the image to push to your repository:
+```
+docker tag moodle-image:latest 024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest
+```
+or 
+```
+docker tag bitnami/moodle:latest 024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest
+```
+
+
+6\. Push the image:
+```
+docker push 024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest
+```
 
 ### Deployment steps
 
@@ -43,13 +72,14 @@ a. Configure app-config/albCertificateArn and app-config/cfCertificateArn wi
 
 b. Configure the app-config/cfDomain for CloudFront with the same domain name as the public certificates that you’ve requested during the prerequisites step. For example: moodle.example.com.
 
-c. Configure the app-config/moodleImageUri with the Moodle container image URI that you’ve pushed prior to deployment steps, for example \[your-aws-account-id\].dkr.ecr.\[your-region\].amazonaws.com/moodle-image:latest.
+c. Configure the app-config/moodleImageUri with the Moodle container image URI that you’ve pushed prior to deployment steps, for example ```024848486969.dkr.ecr.us-east-1.amazonaws.com/moodle-image:latest```.
 
-2\. Go to the AWS CDK app directory cd src/cdk and then run npm install.
+2\. Go to the AWS CDK app directory cd src/cdk and then run ``` npm install ```
 
-3\. Run cdk bootstrap to bootstrap CDK toolkit (you only need to perform this once).
 
-4\. Run cdk deploy --all to deploy the CDK app.
+3\. Run ```cdk bootstrap``` to bootstrap CDK toolkit.
+
+4\. Run ```cdk deploy --all``` to deploy the CDK app.
 
 5\. Once successfully deployed, Moodle begins first-time installation and it takes approximately 15-20 minutes. Check the progress by checking at the logs in Amazon ECS console.
 
@@ -79,4 +109,4 @@ You should consider deleting the application infrastructure once you no longer n
 
 2\. From the top directory of the source code, go to the CDK app directory cd src/cdk
 
-3\. Run cdk destroy --all to delete the CDK application.
+3\. Run ```cdk destroy --all``` to delete the CDK application.

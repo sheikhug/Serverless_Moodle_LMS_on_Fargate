@@ -1,4 +1,4 @@
-FROM bitnami/moodle:4.0.5
+FROM bitnami/moodle:4.5.1
 RUN apt-get update -y
 
 # Install PHP Redis
